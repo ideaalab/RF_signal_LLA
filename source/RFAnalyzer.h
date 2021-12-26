@@ -29,15 +29,13 @@ protected: //vars
 	AnalyzerChannelData* mRF;
 
 	void RecordFrameV1(U64 starting_sample, U64 ending_sample, RFframeType type, U64 data1, U64 data2);
-	void RecordFrameV2(U64 starting_sample, U64 ending_sample, RFframeType type, U64 data1, U64 data2);
+	void RecordFrameV2(U64 starting_sample, U64 ending_sample, char data);
 
 	RFSimulationDataGenerator mSimulationDataGenerator;
 	bool mSimulationInitilized;
 
-	//Serial analysis vars:
 	U32 mSampleRateHz;
-	/*U32 mStartOfStopBitOffset;
-	U32 mEndOfStopBitOffset;*/
+
 };
 
 extern "C" ANALYZER_EXPORT const char* __cdecl GetAnalyzerName();

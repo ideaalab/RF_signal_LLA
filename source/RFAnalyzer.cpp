@@ -93,6 +93,7 @@ void RFAnalyzer::WorkerThread() {
 					bitCount = 0;
 
 					RecordFrameV1(start_samplenum_high, end_samplenum_low, RF_SYNC, 'S', 'z');
+					RecordFrameV2(start_samplenum_high, end_samplenum_low, 'S');
 				}
 			}
 			else {
@@ -102,6 +103,7 @@ void RFAnalyzer::WorkerThread() {
 						mResults->AddMarker(markerPossition, AnalyzerResults::Zero, mSettings->mInputChannel);
 						
 						RecordFrameV1(start_samplenum_high, end_samplenum_low, RF_BIT, '0', 'o');
+						RecordFrameV2(start_samplenum_high, end_samplenum_low, '0');
 					}
 
 					//one bit
@@ -109,6 +111,7 @@ void RFAnalyzer::WorkerThread() {
 						mResults->AddMarker(markerPossition, AnalyzerResults::One, mSettings->mInputChannel);
 						
 						RecordFrameV1(start_samplenum_high, end_samplenum_low, RF_BIT, '1', 'i');
+						RecordFrameV2(start_samplenum_high, end_samplenum_low, '1');
 					}
 
 					bitCount++;
@@ -270,19 +273,14 @@ void RFAnalyzer::RecordFrameV1(U64 starting_sample, U64 ending_sample, RFframeTy
 	ReportProgress(frame.mEndingSampleInclusive);
 }
 
-void RFAnalyzer::RecordFrameV2(U64 starting_sample, U64 ending_sample, RFframeType type, U64 data1, U64 data2) {
-	FrameV2 frame;
+void RFAnalyzer::RecordFrameV2(U64 starting_sample, U64 ending_sample, char data) {
+	FrameV2 frameV2;
 
-	frame.mStartingSampleInclusive = starting_sample;
-	frame.mEndingSampleInclusive = ending_sample;
-	frame.mFlags = 0;
-	frame.mType = (U8)type;
-	frame.mData1 = data1;
-	frame.mData2 = data2;
+	frameV2.AddByte("bit", data);
 
-	mResults->AddFrameV2(frame);
+	mResults->AddFrameV2(frameV2, "bitstate", starting_sample, ending_sample);
 	mResults->CommitResults();
-	ReportProgress(frame.mEndingSampleInclusive);
+	//ReportProgress(frameV2.mEndingSampleInclusive);
 }
 
 bool RFAnalyzer::NeedsRerun()
